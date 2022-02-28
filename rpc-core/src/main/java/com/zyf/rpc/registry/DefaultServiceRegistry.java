@@ -20,14 +20,23 @@ public class DefaultServiceRegistry implements ServiceRegistry{
     /**
      * key = 服务名称(即接口名), value = 服务实体(即实现类的实例对象)
      * 将服务名与提供服务的对象的对应关系保存在一个 ConcurrentHashMap 中
+     *
+     * 接口名 + 实现类
      */
     private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
     /**
      * 用来存放实现类的名称，Set存取更高效，存放实现类名称相比存放接口名称占的空间更小，因为一个实现类可能实现了多个接口
      * 使用一个 Set 来保存当前有哪些对象已经被注册
+     *
+     * 实现类名
      */
     private final Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
+    /**
+     *
+     * @param service
+     * @param <T>
+     */
     @Override
     public synchronized <T> void register(T service) {
         String serviceImplName = service.getClass().getCanonicalName();

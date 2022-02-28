@@ -25,12 +25,25 @@ public class RpcResponse<T> implements Serializable {
      */
     private T data;
 
+    /**
+     * 调用成功返回 成功状态码和返回数据
+     * @param data
+     * @param <T>
+     * @return
+     */
     public static <T> RpcResponse<T> success(T data) {
         RpcResponse<T> response = new RpcResponse<>();
         response.setStatusCode(ResponseCode.SUCCESS.getCode());
         response.setData(data);
         return response;
     }
+
+    /**
+     * 调用失败返回 失败状态码和失败信息
+     * @param code
+     * @param <T>
+     * @return
+     */
     public static <T> RpcResponse<T> fail(ResponseCode code) {
         RpcResponse<T> response = new RpcResponse<>();
         response.setStatusCode(code.getCode());

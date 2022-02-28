@@ -7,7 +7,7 @@ package com.zyf.rpc.api;
  */
 public interface HelloService {
     /**
-     * 接口方法
+     * 接口方法 传输一个可序列化的对象
      * @param object
      * @return
      */

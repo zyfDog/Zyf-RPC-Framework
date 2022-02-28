@@ -11,6 +11,8 @@ import java.lang.reflect.Proxy;
  * @author zyf
  * @date 2022/2/27 22:37
  * @description Rpc客户端动态代理
+ * 客户端方面，由于在客户端这一侧我们并没有接口的具体实现类，就没有办法直接生成实例对象。
+ * 这时，我们可以通过动态代理的方式生成实例，并且调用方法时生成需要的RpcRequest对象并且发送给服务端。
  */
 @Slf4j
 public class RpcClientProxy implements InvocationHandler {
@@ -28,6 +30,12 @@ public class RpcClientProxy implements InvocationHandler {
         this.port = port;
     }
 
+    /**
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     //抑制编译器产生警告信息
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz){
