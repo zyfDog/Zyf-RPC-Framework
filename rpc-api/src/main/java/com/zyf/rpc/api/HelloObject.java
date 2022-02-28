@@ -2,6 +2,7 @@ package com.zyf.rpc.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Data
 //添加一个含有所有已声明字段属性参数的构造函数
 @AllArgsConstructor
+@NoArgsConstructor
 public class HelloObject implements Serializable {
     //Serializable序列化接口没有任何方法或者字段，只是用于标识可序列化的语义。
     //实现了Serializable接口的类可以被ObjectOutputStream转换为字节流。
