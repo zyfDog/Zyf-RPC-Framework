@@ -40,7 +40,7 @@ public class RpcServer {
             //当未接收到连接请求时，accept()会一直阻塞
             while ((socket = serverSocket.accept()) != null){
                 log.info("客户端连接！IP：" + socket.getInetAddress());
-                threadPool.execute(new WorkerThread(socket, service));
+                threadPool.execute(new RequestHandler(socket, service));
             }
         }catch (IOException e){
             log.info("连接时有错误发生：" + e);

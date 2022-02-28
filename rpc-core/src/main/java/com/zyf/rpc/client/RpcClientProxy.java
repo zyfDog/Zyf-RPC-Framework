@@ -1,7 +1,7 @@
 package com.zyf.rpc.client;
 
 import com.zyf.rpc.entity.RpcRequest;
-import com.zyf.rpc.entity.RpcResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -12,6 +12,7 @@ import java.lang.reflect.Proxy;
  * @date 2022/2/27 22:37
  * @description Rpc客户端动态代理
  */
+@Slf4j
 public class RpcClientProxy implements InvocationHandler {
 
     private String host;
@@ -36,6 +37,7 @@ public class RpcClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        log.info("调用方法：{}#{}", method.getDeclaringClass().getName(), method.getName());
         //客户端向服务端传输的对象,
         RpcRequest rpcRequest = RpcRequest.builder()
                 .interfaceName(method.getDeclaringClass().getName())
@@ -45,6 +47,7 @@ public class RpcClientProxy implements InvocationHandler {
                 .build();
         //进行远程调用的客户端
         RpcClient rpcClient = new RpcClient();
-        return ((RpcResponse)rpcClient.sendRequest(rpcRequest, host, port)).getData();
+        // return ((RpcResponse)rpcClient.sendRequest(rpcRequest, host, port)).getData();
+        return rpcClient.sendRequest(rpcRequest, host, port);
     }
 }
