@@ -17,4 +17,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <!--引入google guava，它相当于jdk的拓展，更方便强大的编程-->
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>
