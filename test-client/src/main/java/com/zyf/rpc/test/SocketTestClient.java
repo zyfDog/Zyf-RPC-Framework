@@ -1,18 +1,20 @@
 package com.zyf.rpc.test;
 
+import com.zyf.rpc.RpcClientProxy;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
-import com.zyf.rpc.client.RpcClientProxy;
+import com.zyf.rpc.socket.client.SocketClient;
 
 /**
  * @author zyf
  * @date 2022/2/28 14:43
  * @description 测试用客户端
  */
-public class TestClient {
+public class SocketTestClient {
     public static void main(String[] args) {
+        SocketClient client = new SocketClient("127.0.0.1", 9000);
         //接口与代理对象之间的中介对象
-        RpcClientProxy proxy = new RpcClientProxy("127.0.0.1", 9000);
+        RpcClientProxy proxy = new RpcClientProxy(client);
         //创建代理对象
         HelloService helloService = proxy.getProxy(HelloService.class);
         //接口方法的参数对象

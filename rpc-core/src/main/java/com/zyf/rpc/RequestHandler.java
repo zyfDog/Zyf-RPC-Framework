@@ -1,4 +1,4 @@
-package com.zyf.rpc.server;
+package com.zyf.rpc;
 
 import com.zyf.rpc.entity.RpcRequest;
 import com.zyf.rpc.entity.RpcResponse;

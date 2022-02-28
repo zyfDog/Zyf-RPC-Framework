@@ -23,14 +23,14 @@ public class DefaultServiceRegistry implements ServiceRegistry{
      *
      * 接口名 + 实现类
      */
-    private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
+    private final static Map<String, Object> serviceMap = new ConcurrentHashMap<>();
     /**
      * 用来存放实现类的名称，Set存取更高效，存放实现类名称相比存放接口名称占的空间更小，因为一个实现类可能实现了多个接口
      * 使用一个 Set 来保存当前有哪些对象已经被注册
      *
      * 实现类名
      */
-    private final Set<String> registeredService = ConcurrentHashMap.newKeySet();
+    private final static Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
     /**
      *

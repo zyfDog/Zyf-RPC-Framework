@@ -1,5 +1,7 @@
-package com.zyf.rpc.server;
+package com.zyf.rpc.socket.server;
 
+import com.zyf.rpc.RequestHandler;
+import com.zyf.rpc.RpcServer;
 import com.zyf.rpc.registry.ServiceRegistry;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +16,7 @@ import java.util.concurrent.*;
  * @description 进行远程调用连接的服务端
  */
 @Slf4j
-public class RpcServer {
+public class SocketServer implements RpcServer {
 
     private static final int CORE_POOL_SIZE = 5;
     private static final int MAXIMUM_POOL_SIZE = 50;
@@ -24,7 +26,7 @@ public class RpcServer {
     private RequestHandler requestHandler = new RequestHandler();
     private final ServiceRegistry serviceRegistry;
 
-    public RpcServer(ServiceRegistry serviceRegistry){
+    public SocketServer(ServiceRegistry serviceRegistry){
         this.serviceRegistry = serviceRegistry;
         /**
          * 设置上限为100个线程的阻塞队列
