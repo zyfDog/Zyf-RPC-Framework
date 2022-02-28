@@ -5,56 +5,34 @@ import com.zyf.rpc.entity.RpcResponse;
 import com.zyf.rpc.enumeration.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.Socket;
 
 /**
  * @author zyf
  * @date 2022/2/28 14:11
- * @description 实际执行方法调用任务的工作线程
+ * @description 实际执行方法调用的处理器
  */
 @Slf4j
-public class RequestHandler implements Runnable{
+public class RequestHandler{
 
-    // private static final Logger logger = LoggerFactory.getLogger(WorkerThread.class);
+    // private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket socket;
-    private Object service;
-
-    public RequestHandler(Socket socket, Object service){
-        this.socket = socket;
-        this.service = service;
-    }
-
-    @Override
-    public void run() {
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream())) {
-            RpcRequest rpcRequest = (RpcRequest)objectInputStream.readObject();
-//            //利用反射原理找到远程所需调用的方法
-//            Method method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
-//            //invoke(obj实例对象,obj可变参数)
-//            Object returnObject = method.invoke(service, rpcRequest.getParameters());
-            Object returnObject = invokeMethod(rpcRequest);
-            objectOutputStream.writeObject(RpcResponse.success(returnObject));
-            objectOutputStream.flush();
-        }catch (IOException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e){
+    public Object handle(RpcRequest rpcRequest, Object service){
+        Object result = null;
+        try{
+            result = invokeTargetMethod(rpcRequest, service);
+            log.info("服务：{}成功调用方法：{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
+        }catch (IllegalAccessException | InvocationTargetException e){
             log.info("调用或发送时有错误发生：" + e);
         }
+        return result;
     }
 
-    private Object invokeMethod(RpcRequest rpcRequest) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException{
-        Class<?> clazz = Class.forName(rpcRequest.getInterfaceName());
-        //判断是否为同一类型或存在父子、接口关系
-        if(!clazz.isAssignableFrom(service.getClass())){
-            return RpcResponse.fail(ResponseCode.ClASS_NOT_FOUND);
-        }
+    private Object invokeTargetMethod(RpcRequest rpcRequest,Object service) throws InvocationTargetException, IllegalAccessException{
         Method method;
         try{
+            //getClass()获取的是实例对象的类型
             method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
         }catch (NoSuchMethodException e){
             return RpcResponse.fail(ResponseCode.METHOD_NOT_FOUND);
