@@ -8,10 +8,17 @@
     <artifactId>test-server</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>测试用的服务端</description>
+
     <dependencies>
         <dependency>
             <groupId>com.zyf</groupId>
             <artifactId>rpc-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zyf</groupId>
+            <artifactId>rpc-core</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
