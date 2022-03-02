@@ -2,7 +2,6 @@ package com.zyf.rpc.socket.server;
 
 import com.zyf.rpc.RequestHandler;
 import com.zyf.rpc.entity.RpcRequest;
-import com.zyf.rpc.entity.RpcResponse;
 import com.zyf.rpc.registry.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.socket.util.ObjectReader;
@@ -48,8 +47,9 @@ public class RequestHandlerThread implements Runnable {
             // 通过接口名获取实现类
             Object service = serviceRegistry.getService(interfaceName);
             // 通过处理器执行方法，得到返回结果
-            Object result = requestHandler.handle(rpcRequest, service);
-            RpcResponse<Object> response = RpcResponse.success(result);
+            /*Object result = requestHandler.handle(rpcRequest, service);
+            RpcResponse<Object> response = RpcResponse.success(result);*/
+            Object response = requestHandler.handle(rpcRequest, service);
             ObjectWriter.writeObject(outputStream, response, serializer);
         }catch (IOException e){
             log.info("调用或发送时发生错误：" + e);

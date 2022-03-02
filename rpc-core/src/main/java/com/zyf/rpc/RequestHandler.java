@@ -32,7 +32,7 @@ public class RequestHandler{
         }catch (IllegalAccessException | InvocationTargetException e){
             log.info("调用或发送时有错误发生：" + e);
         }
-        return result;
+        return RpcResponse.success(result, rpcRequest.getRequestId());
     }
 
     private Object invokeTargetMethod(RpcRequest rpcRequest,Object service) throws InvocationTargetException, IllegalAccessException{
@@ -42,7 +42,7 @@ public class RequestHandler{
             // 利用反射原理找到远程所需调用的方法
             method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
         }catch (NoSuchMethodException e){
-            return RpcResponse.fail(ResponseCode.METHOD_NOT_FOUND);
+            return RpcResponse.fail(ResponseCode.METHOD_NOT_FOUND, rpcRequest.getRequestId());
         }
         // invoke(obj实例对象,obj可变参数)
         return method.invoke(service, rpcRequest.getParameters());

@@ -3,12 +3,12 @@ package com.zyf.rpc.socket.client;
 import com.zyf.rpc.RpcClient;
 import com.zyf.rpc.entity.RpcRequest;
 import com.zyf.rpc.entity.RpcResponse;
-import com.zyf.rpc.enumeration.ResponseCode;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.socket.util.ObjectReader;
 import com.zyf.rpc.socket.util.ObjectWriter;
+import com.zyf.rpc.util.RpcMessageChecker;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -65,14 +65,15 @@ public class SocketClient implements RpcClient {
             Object obj = ObjectReader.readObject(inputStream);
             RpcResponse rpcResponse = (RpcResponse) obj;
 
-            if(rpcResponse == null){
+            /*if(rpcResponse == null){
                 log.error("服务调用失败，service:{}" + rpcRequest.getInterfaceName());
                 throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE, "service:" + rpcRequest.getInterfaceName());
             }
             if(rpcResponse.getStatusCode() == null || rpcResponse.getStatusCode() != ResponseCode.SUCCESS.getCode()){
                 log.error("服务调用失败，service:{} response:{}", rpcRequest.getInterfaceName(), rpcResponse);
                 throw new RpcException(RpcError.SERVICE_INVOCATION_FAILURE, "service:" + rpcRequest.getInterfaceName());
-            }
+            }*/
+            RpcMessageChecker.check(rpcRequest, rpcResponse);
             return rpcResponse.getData();
         } catch (IOException e) {
             log.error("调用时有错误发生：" + e);
