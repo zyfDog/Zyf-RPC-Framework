@@ -6,12 +6,13 @@ import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.registry.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
+import com.zyf.rpc.util.ThreadPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author zyf
@@ -21,10 +22,10 @@ import java.util.concurrent.*;
 @Slf4j
 public class SocketServer implements RpcServer {
 
-    private static final int CORE_POOL_SIZE = 5;
+    /*private static final int CORE_POOL_SIZE = 5;
     private static final int MAXIMUM_POOL_SIZE = 50;
     private static final int KEEP_ALIVE_TIME = 60;
-    private static final int BLOCKING_QUEUE_CAPACITY = 100;
+    private static final int BLOCKING_QUEUE_CAPACITY = 100;*/
     private final ExecutorService threadPool;
     private RequestHandler requestHandler = new RequestHandler();
     private final ServiceRegistry serviceRegistry;
@@ -35,12 +36,14 @@ public class SocketServer implements RpcServer {
         /**
          * 设置上限为100个线程的阻塞队列
          */
-        BlockingQueue<Runnable> workingQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_CAPACITY);
+        /*BlockingQueue<Runnable> workingQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_CAPACITY);
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        /**
+        *//**
          * 创建线程池实例
-         */
-        threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, workingQueue, threadFactory);
+         *//*
+        threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, workingQueue, threadFactory);*/
+        //创建线程池
+        threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
     }
 
     /**
