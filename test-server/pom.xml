@@ -4,29 +4,35 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>Zyf-RPC-Framework</artifactId>
+        <groupId>com.zyf</groupId>
+        <version>2.0-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.zyf</groupId>
     <artifactId>test-server</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>测试用的服务端</description>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.zyf</groupId>
             <artifactId>rpc-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.zyf</groupId>
             <artifactId>rpc-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
 
 </project>

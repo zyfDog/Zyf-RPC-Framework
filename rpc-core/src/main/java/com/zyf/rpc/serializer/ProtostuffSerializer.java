@@ -45,7 +45,7 @@ public class ProtostuffSerializer implements CommonSerializer {
     public Object deserialize(byte[] bytes, Class<?> clazz) {
         Schema schema = getSchema(clazz);
         Object obj = schema.newMessage();
-        //反序列化操作
+        //反序列化操作，将字节数组转换为对应的对象
         ProtostuffIOUtil.mergeFrom(bytes, obj, schema);
         return obj;
     }
@@ -60,6 +60,7 @@ public class ProtostuffSerializer implements CommonSerializer {
      */
     private Schema getSchema(Class clazz) {
         //首先尝试从Map缓存中获取类对应的schema
+        //它的创建过程是线程安全的,采用懒创建的方式，即当需要schema的时候才创建
         Schema schema = schemaCache.get(clazz);
         if(Objects.isNull(schema)) {
             //新创建一个schema，RuntimeSchema就是将schema繁琐的创建过程封装了起来

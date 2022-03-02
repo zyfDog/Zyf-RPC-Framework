@@ -7,9 +7,10 @@
     <parent>
         <artifactId>Zyf-RPC-Framework</artifactId>
         <groupId>com.zyf</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
     <artifactId>rpc-api</artifactId>
+    <groupId>com.zyf</groupId>
     <description>服务端与客户端的公共调用接口</description>
 
     <properties>
