@@ -11,6 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum SerializerCode {
+
     KRYO(0),
     JSON(1),
     HESSIAN(2);

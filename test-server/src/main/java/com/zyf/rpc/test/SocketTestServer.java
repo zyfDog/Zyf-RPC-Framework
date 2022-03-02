@@ -3,6 +3,7 @@ package com.zyf.rpc.test;
 import com.zyf.rpc.api.HelloService;
 import com.zyf.rpc.registry.DefaultServiceRegistry;
 import com.zyf.rpc.registry.ServiceRegistry;
+import com.zyf.rpc.serializer.HessianSerializer;
 import com.zyf.rpc.socket.server.SocketServer;
 
 /**
@@ -19,8 +20,9 @@ public class SocketTestServer {
         //注册服务对象到服务容器中
         serviceRegistry.register(helloService);
         //将服务容器纳入到服务端
-        SocketServer rpcServer = new SocketServer(serviceRegistry);
+        SocketServer socketServer = new SocketServer(serviceRegistry);
         //启动服务端
-        rpcServer.start(9000);
+        socketServer.setSerializer(new HessianSerializer());
+        socketServer.start(9000);
     }
 }

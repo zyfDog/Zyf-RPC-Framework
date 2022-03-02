@@ -4,6 +4,7 @@ import com.zyf.rpc.api.HelloService;
 import com.zyf.rpc.netty.server.NettyServer;
 import com.zyf.rpc.registry.DefaultServiceRegistry;
 import com.zyf.rpc.registry.ServiceRegistry;
+import com.zyf.rpc.serializer.KryoSerializer;
 
 /**
  * @author zyf
@@ -16,6 +17,7 @@ public class NettyTestServer {
         ServiceRegistry registry = new DefaultServiceRegistry();
         registry.register(helloService);
         NettyServer server = new NettyServer();
+        server.setSerializer(new KryoSerializer());
         server.start(9999);
     }
 }

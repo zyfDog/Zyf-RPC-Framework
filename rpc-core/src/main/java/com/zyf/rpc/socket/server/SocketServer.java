@@ -2,7 +2,10 @@ package com.zyf.rpc.socket.server;
 
 import com.zyf.rpc.RequestHandler;
 import com.zyf.rpc.RpcServer;
+import com.zyf.rpc.enumeration.RpcError;
+import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.registry.ServiceRegistry;
+import com.zyf.rpc.serializer.CommonSerializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -25,6 +28,7 @@ public class SocketServer implements RpcServer {
     private final ExecutorService threadPool;
     private RequestHandler requestHandler = new RequestHandler();
     private final ServiceRegistry serviceRegistry;
+    private CommonSerializer serializer;
 
     public SocketServer(ServiceRegistry serviceRegistry){
         this.serviceRegistry = serviceRegistry;
@@ -42,18 +46,28 @@ public class SocketServer implements RpcServer {
     /**
      * @description 服务端启动
      */
+    @Override
     public void start(int port){
+        if (serializer == null){
+            log.error("未设置序列化器");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
         try(ServerSocket serverSocket = new ServerSocket(port)){
             log.info("服务器启动……");
             Socket socket;
             //当未接收到连接请求时，accept()会一直阻塞
             while ((socket = serverSocket.accept()) != null){
                 log.info("客户端连接！{}:{}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry));
+                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry, serializer));
             }
             threadPool.shutdown();
         }catch (IOException e){
             log.info("服务器启动时有错误发生：" + e);
         }
+    }
+
+    @Override
+    public void setSerializer(CommonSerializer serializer) {
+        this.serializer = serializer;
     }
 }

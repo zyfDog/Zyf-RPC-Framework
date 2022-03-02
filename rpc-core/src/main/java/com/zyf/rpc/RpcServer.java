@@ -1,5 +1,7 @@
 package com.zyf.rpc;
 
+import com.zyf.rpc.serializer.CommonSerializer;
+
 /**
  * @author zyf
  * @date 2022/2/28 18:20
@@ -8,4 +10,6 @@ package com.zyf.rpc;
 public interface RpcServer {
 
     void start(int port);
+
+    void setSerializer(CommonSerializer serializer);
 }

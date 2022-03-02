@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * @author zyf
  * @date 2022/2/28 19:13
- * @description
+ * @description 包是请求包还是响应包
  */
 @Getter
 @AllArgsConstructor

@@ -39,7 +39,6 @@ public class ThreadPoolFactory {
      * @param threadNamePrefix 作为创建的线程名字的前缀，指定有意义的线程名称，方便出错时回溯
      * @param daemon 指定是否为Daemon Thread(守护线程)，当所有的非守护线程结束时，程序也就终止了，同时会杀死进程中的所有守护线程
      * @return [java.util.concurrent.ThreadFactory]
-     * @date [2021-03-10 17:50]
      */
     private static ThreadFactory createThreadFactory(String threadNamePrefix, Boolean daemon) {
         if (threadNamePrefix != null) {

@@ -1,6 +1,7 @@
 package com.zyf.rpc;
 
 import com.zyf.rpc.entity.RpcRequest;
+import com.zyf.rpc.serializer.CommonSerializer;
 
 /**
  * @author zyf
@@ -10,4 +11,6 @@ import com.zyf.rpc.entity.RpcRequest;
 public interface RpcClient {
 
     Object sendRequest(RpcRequest rpcRequest);
+
+    void setSerializer(CommonSerializer serializer);
 }
