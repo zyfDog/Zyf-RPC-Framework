@@ -1,10 +1,12 @@
-package com.zyf.rpc.netty.client;
+package com.zyf.rpc.transport.netty.client;
 
 import com.zyf.rpc.RpcClient;
 import com.zyf.rpc.entity.RpcRequest;
 import com.zyf.rpc.entity.RpcResponse;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
+import com.zyf.rpc.register.NacosServiceRegistry;
+import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.util.RpcMessageChecker;
 import io.netty.channel.Channel;
@@ -23,10 +25,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NettyClient implements RpcClient {
 
     // private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
-
-    private String host;
-    private int port;
     // private static final Bootstrap bootstrap;
+
+    private final ServiceRegistry serviceRegistry;
+
     private CommonSerializer serializer;
 
     /*static {
@@ -37,9 +39,8 @@ public class NettyClient implements RpcClient {
                 .option(ChannelOption.SO_KEEPALIVE, true);
     }*/
 
-    public NettyClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public NettyClient() {
+        serviceRegistry = new NacosServiceRegistry();
     }
 
     @Override
@@ -64,7 +65,10 @@ public class NettyClient implements RpcClient {
             log.info("客户端连接到服务端{}：{}", host, port);
             Channel channel = future.channel();
             if(channel != null){*/
-            Channel channel = ChannelProvider.get(new InetSocketAddress(host, port), serializer);
+            //从Nacos获取提供对应服务的服务端地址
+            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            //创建Netty通道连接
+            Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
             if (channel.isActive()) {
                 //向服务端发请求，并设置监听，关于writeAndFlush()的具体实现可以参考：https://blog.csdn.net/qq_34436819/article/details/103937188
                 channel.writeAndFlush(rpcRequest).addListener(future1 -> {

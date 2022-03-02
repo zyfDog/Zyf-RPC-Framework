@@ -4,7 +4,7 @@ import com.zyf.rpc.RpcClient;
 import com.zyf.rpc.RpcClientProxy;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
-import com.zyf.rpc.netty.client.NettyClient;
+import com.zyf.rpc.transport.netty.client.NettyClient;
 import com.zyf.rpc.serializer.ProtostuffSerializer;
 
 /**
@@ -14,7 +14,7 @@ import com.zyf.rpc.serializer.ProtostuffSerializer;
  */
 public class NettyTestClient {
     public static void main(String[] args) {
-        RpcClient client = new NettyClient("127.0.0.1", 9999);
+        RpcClient client = new NettyClient();
         client.setSerializer(new ProtostuffSerializer());
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);

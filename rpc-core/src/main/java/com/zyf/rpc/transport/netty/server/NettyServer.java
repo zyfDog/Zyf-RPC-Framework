@@ -1,10 +1,14 @@
-package com.zyf.rpc.netty.server;
+package com.zyf.rpc.transport.netty.server;
 
 import com.zyf.rpc.RpcServer;
 import com.zyf.rpc.codec.CommonDecoder;
 import com.zyf.rpc.codec.CommonEncoder;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
+import com.zyf.rpc.provider.ServiceProvider;
+import com.zyf.rpc.provider.ServiceProviderImpl;
+import com.zyf.rpc.register.NacosServiceRegistry;
+import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -14,6 +18,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author zyf
@@ -26,8 +32,35 @@ public class NettyServer implements RpcServer {
     // private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
     private CommonSerializer serializer;
 
+    private final String host;
+    private final int port;
+
+    private final ServiceRegistry serviceRegistry;
+    private final ServiceProvider serviceProvider;
+
+    public NettyServer(String host, int port) {
+        this.host = host;
+        this.port = port;
+        serviceRegistry = new NacosServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
+    }
+
+    /**
+     * @description 将服务保存在本地的注册表，同时注册到Nacos
+     */
     @Override
-    public void start(int port) {
+    public <T> void publishService(Object service, Class<T> serviceClass) {
+        if (serializer == null) {
+            log.error("未设置序列化器");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
+        serviceProvider.addServiceProvider(service);
+        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+        start();
+    }
+
+    @Override
+    public void start() {
         if (serializer == null) {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
@@ -81,4 +114,5 @@ public class NettyServer implements RpcServer {
     public void setSerializer(CommonSerializer serializer) {
         this.serializer = serializer;
     }
+
 }

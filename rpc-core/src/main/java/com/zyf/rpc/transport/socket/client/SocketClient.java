@@ -1,4 +1,4 @@
-package com.zyf.rpc.socket.client;
+package com.zyf.rpc.transport.socket.client;
 
 import com.zyf.rpc.RpcClient;
 import com.zyf.rpc.entity.RpcRequest;
@@ -6,8 +6,8 @@ import com.zyf.rpc.entity.RpcResponse;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.serializer.CommonSerializer;
-import com.zyf.rpc.socket.util.ObjectReader;
-import com.zyf.rpc.socket.util.ObjectWriter;
+import com.zyf.rpc.transport.socket.util.ObjectReader;
+import com.zyf.rpc.transport.socket.util.ObjectWriter;
 import com.zyf.rpc.util.RpcMessageChecker;
 import lombok.extern.slf4j.Slf4j;
 

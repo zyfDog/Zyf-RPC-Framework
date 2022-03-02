@@ -4,7 +4,7 @@ import com.zyf.rpc.RpcClientProxy;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
 import com.zyf.rpc.serializer.KryoSerializer;
-import com.zyf.rpc.socket.client.SocketClient;
+import com.zyf.rpc.transport.socket.client.SocketClient;
 
 /**
  * @author zyf

@@ -1,4 +1,4 @@
-package com.zyf.rpc.netty.client;
+package com.zyf.rpc.transport.netty.client;
 
 import com.zyf.rpc.entity.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;

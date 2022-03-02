@@ -1,11 +1,10 @@
-package com.zyf.rpc.socket.server;
+package com.zyf.rpc.transport.socket.server;
 
-import com.zyf.rpc.RequestHandler;
+import com.zyf.rpc.handler.RequestHandler;
 import com.zyf.rpc.entity.RpcRequest;
-import com.zyf.rpc.registry.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
-import com.zyf.rpc.socket.util.ObjectReader;
-import com.zyf.rpc.socket.util.ObjectWriter;
+import com.zyf.rpc.transport.socket.util.ObjectReader;
+import com.zyf.rpc.transport.socket.util.ObjectWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -28,13 +27,11 @@ public class RequestHandlerThread implements Runnable {
 
     private Socket socket;
     private RequestHandler requestHandler;
-    private ServiceRegistry serviceRegistry;
     private CommonSerializer serializer;
 
-    public RequestHandlerThread(Socket socket, RequestHandler requestHandler, ServiceRegistry serviceRegistry, CommonSerializer serializer) {
+    public RequestHandlerThread(Socket socket, RequestHandler requestHandler, CommonSerializer serializer) {
         this.socket = socket;
         this.requestHandler = requestHandler;
-        this.serviceRegistry = serviceRegistry;
         this.serializer = serializer;
     }
 
@@ -43,13 +40,13 @@ public class RequestHandlerThread implements Runnable {
         try(InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream()) {
             RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
-            String interfaceName = rpcRequest.getInterfaceName();
-            // 通过接口名获取实现类
-            Object service = serviceRegistry.getService(interfaceName);
+//            String interfaceName = rpcRequest.getInterfaceName();
+//            // 通过接口名获取实现类
+//            Object service = serviceRegistry.getService(interfaceName);
             // 通过处理器执行方法，得到返回结果
             /*Object result = requestHandler.handle(rpcRequest, service);
             RpcResponse<Object> response = RpcResponse.success(result);*/
-            Object response = requestHandler.handle(rpcRequest, service);
+            Object response = requestHandler.handle(rpcRequest);
             ObjectWriter.writeObject(outputStream, response, serializer);
         }catch (IOException e){
             log.info("调用或发送时发生错误：" + e);

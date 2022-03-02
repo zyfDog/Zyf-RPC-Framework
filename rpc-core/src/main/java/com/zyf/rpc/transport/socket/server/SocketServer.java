@@ -1,15 +1,19 @@
-package com.zyf.rpc.socket.server;
+package com.zyf.rpc.transport.socket.server;
 
-import com.zyf.rpc.RequestHandler;
 import com.zyf.rpc.RpcServer;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
-import com.zyf.rpc.registry.ServiceRegistry;
+import com.zyf.rpc.handler.RequestHandler;
+import com.zyf.rpc.provider.ServiceProvider;
+import com.zyf.rpc.provider.ServiceProviderImpl;
+import com.zyf.rpc.register.NacosServiceRegistry;
+import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.util.ThreadPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -27,41 +31,49 @@ public class SocketServer implements RpcServer {
     private static final int KEEP_ALIVE_TIME = 60;
     private static final int BLOCKING_QUEUE_CAPACITY = 100;*/
     private final ExecutorService threadPool;
-    private RequestHandler requestHandler = new RequestHandler();
-    private final ServiceRegistry serviceRegistry;
+    private final String host;
+    private final int port;
     private CommonSerializer serializer;
+    private RequestHandler requestHandler = new RequestHandler();
 
-    public SocketServer(ServiceRegistry serviceRegistry){
-        this.serviceRegistry = serviceRegistry;
-        /**
-         * 设置上限为100个线程的阻塞队列
-         */
-        /*BlockingQueue<Runnable> workingQueue = new ArrayBlockingQueue<>(BLOCKING_QUEUE_CAPACITY);
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        *//**
-         * 创建线程池实例
-         *//*
-        threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, workingQueue, threadFactory);*/
+    private final ServiceRegistry serviceRegistry;
+    private final ServiceProvider serviceProvider;
+
+    public SocketServer(String host, int port){
+        this.host = host;
+        this.port = port;
+        serviceRegistry = new NacosServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
         //创建线程池
         threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
+    }
+
+    /**
+     * @description 将服务保存在本地的注册表，同时注册到Nacos注册中心
+     */
+    @Override
+    public <T> void publishService(Object service, Class<T> serviceClass) {
+        if (serializer == null){
+            log.error("未设置序列化器");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
+        serviceProvider.addServiceProvider(service);
+        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+        start();
     }
 
     /**
      * @description 服务端启动
      */
     @Override
-    public void start(int port){
-        if (serializer == null){
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
+    public void start(){
         try(ServerSocket serverSocket = new ServerSocket(port)){
             log.info("服务器启动……");
             Socket socket;
             //当未接收到连接请求时，accept()会一直阻塞
             while ((socket = serverSocket.accept()) != null){
                 log.info("客户端连接！{}:{}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry, serializer));
+                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serializer));
             }
             threadPool.shutdown();
         }catch (IOException e){
@@ -73,4 +85,5 @@ public class SocketServer implements RpcServer {
     public void setSerializer(CommonSerializer serializer) {
         this.serializer = serializer;
     }
+
 }
