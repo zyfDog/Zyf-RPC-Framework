@@ -1,12 +1,17 @@
 package com.zyf.rpc.transport;
 
 import com.zyf.rpc.entity.RpcRequest;
+import com.zyf.rpc.entity.RpcResponse;
+import com.zyf.rpc.transport.netty.client.NettyClient;
+import com.zyf.rpc.transport.socket.client.SocketClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author zyf
@@ -47,6 +52,21 @@ public class RpcClientProxy implements InvocationHandler {
 
         RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
                 method.getName(), args, method.getParameterTypes(), false);
-        return client.sendRequest(rpcRequest);
+        Object result = null;
+        if(client instanceof NettyClient){
+            //异步获取调用结果
+            CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>)client.sendRequest(rpcRequest);
+            try {
+                result= completableFuture.get().getData();
+            }catch (InterruptedException | ExecutionException e){
+                log.error("方法调用请求发送失败", e);
+                return null;
+            }
+        }
+        if(client instanceof SocketClient){
+            RpcResponse rpcResponse = (RpcResponse) client.sendRequest(rpcRequest);
+            result = rpcResponse.getData();
+        }
+        return result;
     }
 }

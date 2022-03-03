@@ -2,6 +2,7 @@ package com.zyf.rpc.transport.netty.client;
 
 import com.zyf.rpc.entity.RpcRequest;
 import com.zyf.rpc.entity.RpcResponse;
+import com.zyf.rpc.factory.SingletonFactory;
 import com.zyf.rpc.serializer.CommonSerializer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -22,6 +23,12 @@ import java.net.InetSocketAddress;
  */
 @Slf4j
 public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
+
+    private final UnprocessedRequests unprocessedRequests;
+
+    public NettyClientHandler(){
+        unprocessedRequests = SingletonFactory.getInstance(UnprocessedRequests.class);
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -49,6 +56,8 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
             ctx.channel().attr(key).set(msg);
             //关闭客户端通道
             ctx.channel().close();
+            //将响应数据取出
+            unprocessedRequests.complete(msg);
         } finally {
             ReferenceCountUtil.release(msg);
         }
