@@ -1,5 +1,6 @@
 package com.zyf.rpc.test;
 
+import com.zyf.rpc.annotation.Service;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description 服务端api接口实现
  */
 @Slf4j
+@Service
 public class HelloServiceImpl implements HelloService {
 
     /**
@@ -21,6 +23,6 @@ public class HelloServiceImpl implements HelloService {
     public String hello(HelloObject object) {
         //使用{}可以直接将getMessage()内容输出
         log.info("接收到消息：{}", object.getMessage());
-        return "本次处理来自Netty服务";
+        return "成功调用hello()方法";
     }
 }

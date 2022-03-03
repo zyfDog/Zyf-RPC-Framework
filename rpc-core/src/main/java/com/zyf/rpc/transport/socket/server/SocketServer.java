@@ -1,7 +1,5 @@
 package com.zyf.rpc.transport.socket.server;
 
-import com.zyf.rpc.enumeration.RpcError;
-import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.factory.ThreadPoolFactory;
 import com.zyf.rpc.handler.RequestHandler;
 import com.zyf.rpc.hook.ShutdownHook;
@@ -10,7 +8,7 @@ import com.zyf.rpc.provider.ServiceProviderImpl;
 import com.zyf.rpc.register.NacosServiceRegistry;
 import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
-import com.zyf.rpc.transport.RpcServer;
+import com.zyf.rpc.transport.AbstractRpcServer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -25,7 +23,7 @@ import java.util.concurrent.ExecutorService;
  * @description 进行远程调用连接的服务端
  */
 @Slf4j
-public class SocketServer implements RpcServer {
+public class SocketServer extends AbstractRpcServer {
 
     private final ExecutorService threadPool;
     private final String host;
@@ -40,7 +38,7 @@ public class SocketServer implements RpcServer {
         this(host, port, DEFAULT_SERIALIZER);
     }
 
-    public SocketServer(String host, int port, Integer serializerCode){
+    public SocketServer(String host, int port, Integer serializerCode) {
         this.host = host;
         this.port = port;
         serviceRegistry = new NacosServiceRegistry();
@@ -48,20 +46,8 @@ public class SocketServer implements RpcServer {
         serializer = CommonSerializer.getByCode(serializerCode);
         //创建线程池
         threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
-    }
-
-    /**
-     * @description 将服务保存在本地的注册表，同时注册到Nacos注册中心
-     */
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        if (serializer == null){
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
+        //自动注册服务
+        scanServices();
     }
 
     /**

@@ -1,7 +1,8 @@
 package com.zyf.rpc.test;
 
-import com.zyf.rpc.api.HelloService;
+import com.zyf.rpc.annotation.ServiceScan;
 import com.zyf.rpc.serializer.CommonSerializer;
+import com.zyf.rpc.transport.RpcServer;
 import com.zyf.rpc.transport.socket.server.SocketServer;
 
 /**
@@ -9,21 +10,10 @@ import com.zyf.rpc.transport.socket.server.SocketServer;
  * @date 2022/2/28 14:41
  * @description 测试用服务端
  */
+@ServiceScan
 public class SocketTestServer {
     public static void main(String[] args) {
-        /*//创建服务对象
-        HelloService helloService = new HelloServiceImpl();
-        //创建服务容器
-        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
-        //注册服务对象到服务容器中
-        serviceRegistry.register(helloService);
-        //将服务容器纳入到服务端
-        SocketServer socketServer = new SocketServer(serviceRegistry);
-        //启动服务端
-        socketServer.setSerializer(new HessianSerializer());
-        socketServer.start(9000);*/
-        HelloService helloService = new HelloServiceImpl2();
-        SocketServer socketServer = new SocketServer("127.0.0.1", 9998, CommonSerializer.HESSIAN_SERIALIZER);
-        socketServer.publishService(helloService, HelloService.class);
+        RpcServer server = new SocketServer("127.0.0.1", 9998, CommonSerializer.HESSIAN_SERIALIZER);
+        server.start();
     }
 }

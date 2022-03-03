@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author zyf
@@ -55,11 +54,10 @@ public class RpcClientProxy implements InvocationHandler {
                 method.getName(), args, method.getParameterTypes(), false);
         RpcResponse rpcResponse = null;
         if(client instanceof NettyClient){
-            //异步获取调用结果
-            CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>)client.sendRequest(rpcRequest);
             try {
-                rpcResponse = completableFuture.get();
-            }catch (InterruptedException | ExecutionException e){
+                //异步获取调用结果
+                CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>)client.sendRequest(rpcRequest);
+            }catch (Exception e){
                 log.error("方法调用请求发送失败", e);
                 return null;
             }

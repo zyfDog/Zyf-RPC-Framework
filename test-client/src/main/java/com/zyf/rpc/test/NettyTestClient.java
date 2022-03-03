@@ -1,5 +1,6 @@
 package com.zyf.rpc.test;
 
+import com.zyf.rpc.api.ByeService;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
 import com.zyf.rpc.serializer.CommonSerializer;
@@ -20,5 +21,7 @@ public class NettyTestClient {
         HelloObject object = new HelloObject(12, "this is netty style");
         String res = helloService.hello(object);
         System.out.println(res);
+        ByeService byeService = rpcClientProxy.getProxy(ByeService.class);
+        System.out.println(byeService.bye("Netty"));
     }
 }
