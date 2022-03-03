@@ -1,6 +1,6 @@
 package com.zyf.rpc.transport.netty.server;
 
-import com.zyf.rpc.RpcServer;
+import com.zyf.rpc.transport.RpcServer;
 import com.zyf.rpc.codec.CommonDecoder;
 import com.zyf.rpc.codec.CommonEncoder;
 import com.zyf.rpc.enumeration.RpcError;
@@ -49,12 +49,12 @@ public class NettyServer implements RpcServer {
      * @description 将服务保存在本地的注册表，同时注册到Nacos
      */
     @Override
-    public <T> void publishService(Object service, Class<T> serviceClass) {
+    public <T> void publishService(T service, Class<T> serviceClass) {
         if (serializer == null) {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        serviceProvider.addServiceProvider(service);
+        serviceProvider.addServiceProvider(service, serviceClass);
         serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
         start();
     }

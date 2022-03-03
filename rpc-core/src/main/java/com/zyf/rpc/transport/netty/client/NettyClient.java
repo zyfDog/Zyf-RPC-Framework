@@ -1,13 +1,13 @@
 package com.zyf.rpc.transport.netty.client;
 
-import com.zyf.rpc.RpcClient;
 import com.zyf.rpc.entity.RpcRequest;
 import com.zyf.rpc.entity.RpcResponse;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
-import com.zyf.rpc.register.NacosServiceRegistry;
-import com.zyf.rpc.register.ServiceRegistry;
+import com.zyf.rpc.register.NacosServiceDiscovery;
+import com.zyf.rpc.register.ServiceDiscovery;
 import com.zyf.rpc.serializer.CommonSerializer;
+import com.zyf.rpc.transport.RpcClient;
 import com.zyf.rpc.util.RpcMessageChecker;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -27,7 +27,7 @@ public class NettyClient implements RpcClient {
     // private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
     // private static final Bootstrap bootstrap;
 
-    private final ServiceRegistry serviceRegistry;
+    private final ServiceDiscovery serviceDiscovery;
 
     private CommonSerializer serializer;
 
@@ -40,7 +40,7 @@ public class NettyClient implements RpcClient {
     }*/
 
     public NettyClient() {
-        serviceRegistry = new NacosServiceRegistry();
+        serviceDiscovery = new NacosServiceDiscovery();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class NettyClient implements RpcClient {
             Channel channel = future.channel();
             if(channel != null){*/
             //从Nacos获取提供对应服务的服务端地址
-            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
             //创建Netty通道连接
             Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
             if (channel.isActive()) {
@@ -87,6 +87,7 @@ public class NettyClient implements RpcClient {
                 RpcMessageChecker.check(rpcRequest, rpcResponse);
                 result.set(rpcResponse.getData());
             } else {
+                channel.close();
                 //0表示”正常“退出程序，即如果当前程序还有在执行的任务，则等待所有任务执行完成以后再退出
                 System.exit(0);
             }

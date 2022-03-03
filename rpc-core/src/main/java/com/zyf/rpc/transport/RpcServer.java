@@ -1,4 +1,4 @@
-package com.zyf.rpc;
+package com.zyf.rpc.transport;
 
 import com.zyf.rpc.serializer.CommonSerializer;
 
@@ -16,5 +16,5 @@ public interface RpcServer {
     /**
      * @description 向Nacos注册服务
      */
-    <T> void publishService(Object service, Class<T> serviceClass);
+    <T> void publishService(T service, Class<T> serviceClass);
 }

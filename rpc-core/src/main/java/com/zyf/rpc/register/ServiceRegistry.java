@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 /**
  * @author zyf
  * @date 2022/3/2 22:47
- * @description 服务注册中心通用接口
+ * @description 服务注册接口
  */
 public interface ServiceRegistry {
 
@@ -17,7 +17,6 @@ public interface ServiceRegistry {
 
     /**
      * @description 根据服务名查找服务实体
-     */
-    InetSocketAddress lookupService(String serviceName);
+    InetSocketAddress lookupService(String serviceName);*/
 
 }

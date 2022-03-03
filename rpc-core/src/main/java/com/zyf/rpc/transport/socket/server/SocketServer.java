@@ -1,6 +1,6 @@
 package com.zyf.rpc.transport.socket.server;
 
-import com.zyf.rpc.RpcServer;
+import com.zyf.rpc.transport.RpcServer;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.handler.RequestHandler;
@@ -52,12 +52,12 @@ public class SocketServer implements RpcServer {
      * @description 将服务保存在本地的注册表，同时注册到Nacos注册中心
      */
     @Override
-    public <T> void publishService(Object service, Class<T> serviceClass) {
+    public <T> void publishService(T service, Class<T> serviceClass) {
         if (serializer == null){
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        serviceProvider.addServiceProvider(service);
+        serviceProvider.addServiceProvider(service, serviceClass);
         serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
         start();
     }

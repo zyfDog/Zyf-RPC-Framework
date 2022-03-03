@@ -1,7 +1,7 @@
 package com.zyf.rpc.test;
 
-import com.zyf.rpc.RpcClient;
-import com.zyf.rpc.RpcClientProxy;
+import com.zyf.rpc.transport.RpcClient;
+import com.zyf.rpc.transport.RpcClientProxy;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
 import com.zyf.rpc.transport.netty.client.NettyClient;
