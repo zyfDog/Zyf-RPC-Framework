@@ -1,15 +1,16 @@
 package com.zyf.rpc.transport.socket.server;
 
-import com.zyf.rpc.transport.RpcServer;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
+import com.zyf.rpc.factory.ThreadPoolFactory;
 import com.zyf.rpc.handler.RequestHandler;
+import com.zyf.rpc.hook.ShutdownHook;
 import com.zyf.rpc.provider.ServiceProvider;
 import com.zyf.rpc.provider.ServiceProviderImpl;
 import com.zyf.rpc.register.NacosServiceRegistry;
 import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
-import com.zyf.rpc.util.ThreadPoolFactory;
+import com.zyf.rpc.transport.RpcServer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -67,13 +68,16 @@ public class SocketServer implements RpcServer {
      */
     @Override
     public void start(){
-        try(ServerSocket serverSocket = new ServerSocket(port)){
+        try(ServerSocket serverSocket = new ServerSocket()){
+            serverSocket.bind(new InetSocketAddress(host, port));
             log.info("服务器启动……");
+            //添加钩子，服务端关闭时会注销服务
+            ShutdownHook.getShutdownHook().addClearAllHook();
             Socket socket;
             //当未接收到连接请求时，accept()会一直阻塞
             while ((socket = serverSocket.accept()) != null){
                 log.info("客户端连接！{}:{}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serializer));
+                threadPool.execute(new SocketRequestHandlerThread(socket, requestHandler, serializer));
             }
             threadPool.shutdown();
         }catch (IOException e){

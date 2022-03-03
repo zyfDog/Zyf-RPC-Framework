@@ -27,33 +27,34 @@ public class RequestHandler{
     /**
      *
      * @param rpcRequest
-     * @param service 实现类
      * @return
      */
     public Object handle(RpcRequest rpcRequest){
-        Object result = null;
         //从服务端本地注册表中获取服务实体
         Object service = serviceProvider.getServiceProvider(rpcRequest.getInterfaceName());
-        try{
+        /*try{
             result = invokeTargetMethod(rpcRequest, service);
             log.info("服务：{}成功调用方法：{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
         }catch (IllegalAccessException | InvocationTargetException e){
             log.info("调用或发送时有错误发生：" + e);
         }
         //方法调用成功
-        return RpcResponse.success(result, rpcRequest.getRequestId());
+        return RpcResponse.success(result, rpcRequest.getRequestId());*/
+        return invokeTargetMethod(rpcRequest, service);
     }
 
-    private Object invokeTargetMethod(RpcRequest rpcRequest,Object service) throws InvocationTargetException, IllegalAccessException{
-        Method method;
+    private Object invokeTargetMethod(RpcRequest rpcRequest,Object service) {
+        Object result;
         try{
             // getClass()获取的是实例对象的类型
             // 利用反射原理找到远程所需调用的方法
-            method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
-        }catch (NoSuchMethodException e){
+            Method method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
+            result = method.invoke(service, rpcRequest.getParameters());
+            log.info("服务：{}成功调用方法：{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
+        }catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
             return RpcResponse.fail(ResponseCode.METHOD_NOT_FOUND, rpcRequest.getRequestId());
         }
         // invoke(obj实例对象,obj可变参数)
-        return method.invoke(service, rpcRequest.getParameters());
+        return RpcResponse.success(result, rpcRequest.getRequestId());
     }
 }

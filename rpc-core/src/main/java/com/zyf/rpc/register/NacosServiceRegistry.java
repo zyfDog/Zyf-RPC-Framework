@@ -2,16 +2,12 @@ package com.zyf.rpc.register;
 
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.util.NacosUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.List;
 
 /**
  * @author zyf
@@ -45,7 +41,7 @@ public class NacosServiceRegistry implements ServiceRegistry{
     public void register(String serviceName, InetSocketAddress inetSocketAddress) {
         try {
             //向Nacos注册服务
-            NacosUtil.registerService(namingService, serviceName, inetSocketAddress);
+            NacosUtil.registerService(serviceName, inetSocketAddress);
         }catch (NacosException e) {
             log.error("注册服务时有错误发生" + e);
             throw new RpcException(RpcError.REGISTER_SERVICE_FAILED);

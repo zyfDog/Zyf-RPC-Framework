@@ -1,15 +1,16 @@
 package com.zyf.rpc.transport.netty.server;
 
-import com.zyf.rpc.transport.RpcServer;
 import com.zyf.rpc.codec.CommonDecoder;
 import com.zyf.rpc.codec.CommonEncoder;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
+import com.zyf.rpc.hook.ShutdownHook;
 import com.zyf.rpc.provider.ServiceProvider;
 import com.zyf.rpc.provider.ServiceProviderImpl;
 import com.zyf.rpc.register.NacosServiceRegistry;
 import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
+import com.zyf.rpc.transport.RpcServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -99,6 +100,8 @@ public class NettyServer implements RpcServer {
                     });
             //绑定端口，启动Netty，sync()代表阻塞主Server线程，以执行Netty线程，如果不阻塞Netty就直接被下面shutdown了
             ChannelFuture future = serverBootstrap.bind(port).sync();
+            //添加注销服务的钩子，服务端关闭时才会执行
+            ShutdownHook.getShutdownHook().addClearAllHook();
             //等确定通道关闭了，关闭future回到主Server线程
             future.channel().closeFuture().sync();
         }catch (InterruptedException e){

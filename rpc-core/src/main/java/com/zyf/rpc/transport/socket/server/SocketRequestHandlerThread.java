@@ -21,7 +21,7 @@ import java.net.Socket;
  * 就会把 RpcRequest 和服务对象直接交给 RequestHandler 去处理，反射等过程被放到了 RequestHandler 里。
  */
 @Slf4j
-public class RequestHandlerThread implements Runnable {
+public class SocketRequestHandlerThread implements Runnable {
 
     // private static final Logger logger = LoggerFactory.getLogger(RequestHandlerThread.class);
 
@@ -29,7 +29,7 @@ public class RequestHandlerThread implements Runnable {
     private RequestHandler requestHandler;
     private CommonSerializer serializer;
 
-    public RequestHandlerThread(Socket socket, RequestHandler requestHandler, CommonSerializer serializer) {
+    public SocketRequestHandlerThread(Socket socket, RequestHandler requestHandler, CommonSerializer serializer) {
         this.socket = socket;
         this.requestHandler = requestHandler;
         this.serializer = serializer;

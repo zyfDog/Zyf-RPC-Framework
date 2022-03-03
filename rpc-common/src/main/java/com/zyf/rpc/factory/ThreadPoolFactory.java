@@ -1,4 +1,4 @@
-package com.zyf.rpc.util;
+package com.zyf.rpc.factory;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.NoArgsConstructor;
