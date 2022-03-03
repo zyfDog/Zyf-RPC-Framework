@@ -1,12 +1,14 @@
 package com.zyf.rpc.transport.netty.server;
 
 import com.zyf.rpc.entity.RpcRequest;
-import com.zyf.rpc.handler.RequestHandler;
 import com.zyf.rpc.factory.ThreadPoolFactory;
+import com.zyf.rpc.handler.RequestHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,26 +28,42 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
     private final ExecutorService threadPool;
     private final RequestHandler requestHandler;
 
-    public NettyServerHandler(){
+    public NettyServerHandler() {
         requestHandler = new RequestHandler();
         //引入异步业务线程池，避免长时间的耗时业务阻塞netty本身的worker工作线程，耽误了同一个Selector中其他任务的执行
         threadPool = ThreadPoolFactory.createDefaultThreadPool(THREAD_NAME_PREFIX);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
-        threadPool.execute(() -> {
-            try{
-                log.info("服务端接收到请求：{}", msg);
-                Object response = requestHandler.handle(msg);
-                // 注意这里的通道是workGroup中的，而NettyServer中创建的是bossGroup的，不要混淆
-                ChannelFuture future = ctx.writeAndFlush(response);
-                /// 当操作失败或者被取消了就关闭通道
-                future.addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-            }finally {
-                ReferenceCountUtil.release(msg);
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleState state = ((IdleStateEvent) evt).state();
+            if (state == IdleState.READER_IDLE) {
+                log.info("长时间未收到心跳包，断开连接……");
+                ctx.close();
             }
-        });
+        } else {
+            super.userEventTriggered(ctx, evt);
+        }
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
+        try {
+            if (msg.getHeartBeat()) {
+                log.info("接收到客户端心跳包……");
+                return;
+            }
+            log.info("服务端接收到请求：{}", msg);
+            Object response = requestHandler.handle(msg);
+            //注意这里的通道是workGroup中的，而NettyServer中创建的是bossGroup的，不要混淆
+            ChannelFuture future = ctx.writeAndFlush(response);
+            //当操作失败或者被取消了就关闭通道
+            future.addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+
+        } finally {
+            ReferenceCountUtil.release(msg);
+        }
     }
 
     @Override

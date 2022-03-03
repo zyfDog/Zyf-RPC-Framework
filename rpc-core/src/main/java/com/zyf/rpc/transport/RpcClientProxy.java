@@ -46,7 +46,7 @@ public class RpcClientProxy implements InvocationHandler {
         //客户端向服务端传输的对象
 
         RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
-                method.getName(), args, method.getParameterTypes());
+                method.getName(), args, method.getParameterTypes(), false);
         return client.sendRequest(rpcRequest);
     }
 }
