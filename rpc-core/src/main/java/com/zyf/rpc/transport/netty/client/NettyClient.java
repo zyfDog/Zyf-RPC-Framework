@@ -5,6 +5,8 @@ import com.zyf.rpc.entity.RpcResponse;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.factory.SingletonFactory;
+import com.zyf.rpc.loadbalancer.LoadBalancer;
+import com.zyf.rpc.loadbalancer.RandomLoadBalancer;
 import com.zyf.rpc.register.NacosServiceDiscovery;
 import com.zyf.rpc.register.ServiceDiscovery;
 import com.zyf.rpc.serializer.CommonSerializer;
@@ -46,11 +48,19 @@ public class NettyClient implements RpcClient {
 
     public NettyClient() {
         //以默认序列化器调用构造函数
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
+    }
+
+    public NettyClient(LoadBalancer loadBalancer){
+        this(DEFAULT_SERIALIZER, loadBalancer);
     }
 
     public NettyClient(Integer serializerCode){
-        serviceDiscovery = new NacosServiceDiscovery();
+        this(serializerCode, new RandomLoadBalancer());
+    }
+
+    public NettyClient(Integer serializerCode, LoadBalancer loadBalancer){
+        serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
         serializer = CommonSerializer.getByCode(serializerCode);
         unprocessedRequests = SingletonFactory.getInstance(UnprocessedRequests.class);
     }
