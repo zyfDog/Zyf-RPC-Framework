@@ -1,9 +1,9 @@
 package com.zyf.rpc.test;
 
-import com.zyf.rpc.transport.RpcClientProxy;
 import com.zyf.rpc.api.HelloObject;
 import com.zyf.rpc.api.HelloService;
-import com.zyf.rpc.serializer.KryoSerializer;
+import com.zyf.rpc.serializer.CommonSerializer;
+import com.zyf.rpc.transport.RpcClientProxy;
 import com.zyf.rpc.transport.socket.client.SocketClient;
 
 /**
@@ -13,9 +13,7 @@ import com.zyf.rpc.transport.socket.client.SocketClient;
  */
 public class SocketTestClient {
     public static void main(String[] args) {
-        SocketClient client = new SocketClient("127.0.0.1", 9000);
-        //接口与代理对象之间的中介对象
-        client.setSerializer(new KryoSerializer());
+        SocketClient client = new SocketClient(CommonSerializer.KRYO_SERIALIZER);
         RpcClientProxy proxy = new RpcClientProxy(client);
         //创建代理对象
         HelloService helloService = proxy.getProxy(HelloService.class);

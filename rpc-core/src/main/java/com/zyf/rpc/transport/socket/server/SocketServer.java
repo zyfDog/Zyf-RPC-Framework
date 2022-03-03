@@ -27,24 +27,25 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public class SocketServer implements RpcServer {
 
-    /*private static final int CORE_POOL_SIZE = 5;
-    private static final int MAXIMUM_POOL_SIZE = 50;
-    private static final int KEEP_ALIVE_TIME = 60;
-    private static final int BLOCKING_QUEUE_CAPACITY = 100;*/
     private final ExecutorService threadPool;
     private final String host;
     private final int port;
-    private CommonSerializer serializer;
-    private RequestHandler requestHandler = new RequestHandler();
+    private final CommonSerializer serializer;
+    private final RequestHandler requestHandler = new RequestHandler();
 
     private final ServiceRegistry serviceRegistry;
     private final ServiceProvider serviceProvider;
 
-    public SocketServer(String host, int port){
+    public SocketServer(String host, int port) {
+        this(host, port, DEFAULT_SERIALIZER);
+    }
+
+    public SocketServer(String host, int port, Integer serializerCode){
         this.host = host;
         this.port = port;
         serviceRegistry = new NacosServiceRegistry();
         serviceProvider = new ServiceProviderImpl();
+        serializer = CommonSerializer.getByCode(serializerCode);
         //创建线程池
         threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
     }
@@ -83,11 +84,6 @@ public class SocketServer implements RpcServer {
         }catch (IOException e){
             log.info("服务器启动时有错误发生：" + e);
         }
-    }
-
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
     }
 
 }

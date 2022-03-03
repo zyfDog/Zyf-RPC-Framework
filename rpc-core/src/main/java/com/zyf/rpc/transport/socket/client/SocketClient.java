@@ -29,11 +29,15 @@ public class SocketClient implements RpcClient {
 
     // private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
     private final ServiceDiscovery serviceDiscovery;
+    private final CommonSerializer serializer;
 
-    private CommonSerializer serializer;
+    public SocketClient() {
+        this(DEFAULT_SERIALIZER);
+    }
 
-    public SocketClient(){
+    public SocketClient(Integer serializerCode) {
         serviceDiscovery = new NacosServiceDiscovery();
+        serializer = CommonSerializer.getByCode(serializerCode);
     }
 
     /**
@@ -69,8 +73,4 @@ public class SocketClient implements RpcClient {
         }
     }
 
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
-    }
 }

@@ -1,7 +1,7 @@
 package com.zyf.rpc.test;
 
 import com.zyf.rpc.api.HelloService;
-import com.zyf.rpc.serializer.HessianSerializer;
+import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.transport.socket.server.SocketServer;
 
 /**
@@ -22,9 +22,8 @@ public class SocketTestServer {
         //启动服务端
         socketServer.setSerializer(new HessianSerializer());
         socketServer.start(9000);*/
-        HelloService helloService = new HelloServiceImpl();
-        SocketServer socketServer = new SocketServer("127.0.0.1", 9998);
-        socketServer.setSerializer(new HessianSerializer());
+        HelloService helloService = new HelloServiceImpl2();
+        SocketServer socketServer = new SocketServer("127.0.0.1", 9998, CommonSerializer.HESSIAN_SERIALIZER);
         socketServer.publishService(helloService, HelloService.class);
     }
 }

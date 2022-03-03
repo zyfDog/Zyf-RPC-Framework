@@ -7,26 +7,10 @@ package com.zyf.rpc.serializer;
  */
 public interface CommonSerializer {
 
-    /**
-     * 序列化
-     * @param obj
-     * @return
-     */
-    byte[] serialize(Object obj);
-
-    /**
-     * 反序列化
-     * @param bytes
-     * @param clazz
-     * @return
-     */
-    Object deserialize(byte[] bytes, Class<?> clazz);
-
-    /**
-     * 获得该序列化器的编号
-     * @return
-     */
-    int getCode();
+    Integer KRYO_SERIALIZER = 0;
+    Integer JSON_SERIALIZER = 1;
+    Integer HESSIAN_SERIALIZER = 2;
+    Integer PROTOBUF_SERIALIZER = 3;
 
     /**
      * 根据编号获取序列化器
@@ -47,5 +31,26 @@ public interface CommonSerializer {
                 return null;
         }
     }
+
+    /**
+     * 序列化
+     * @param obj
+     * @return
+     */
+    byte[] serialize(Object obj);
+
+    /**
+     * 反序列化
+     * @param bytes
+     * @param clazz
+     * @return
+     */
+    Object deserialize(byte[] bytes, Class<?> clazz);
+
+    /**
+     * 获得该序列化器的编号
+     * @return
+     */
+    int getCode();
 
 }
