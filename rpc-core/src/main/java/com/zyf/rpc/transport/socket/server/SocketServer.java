@@ -3,10 +3,8 @@ package com.zyf.rpc.transport.socket.server;
 import com.zyf.rpc.factory.ThreadPoolFactory;
 import com.zyf.rpc.handler.RequestHandler;
 import com.zyf.rpc.hook.ShutdownHook;
-import com.zyf.rpc.provider.ServiceProvider;
 import com.zyf.rpc.provider.ServiceProviderImpl;
 import com.zyf.rpc.register.NacosServiceRegistry;
-import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.transport.AbstractRpcServer;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +24,8 @@ import java.util.concurrent.ExecutorService;
 public class SocketServer extends AbstractRpcServer {
 
     private final ExecutorService threadPool;
-    private final String host;
-    private final int port;
     private final CommonSerializer serializer;
     private final RequestHandler requestHandler = new RequestHandler();
-
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
 
     public SocketServer(String host, int port) {
         this(host, port, DEFAULT_SERIALIZER);

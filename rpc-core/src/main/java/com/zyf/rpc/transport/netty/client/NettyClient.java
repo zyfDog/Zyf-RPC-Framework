@@ -33,10 +33,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class NettyClient implements RpcClient {
 
-    private final ServiceDiscovery serviceDiscovery;
-    private final CommonSerializer serializer;
     private static final EventLoopGroup group;
     private static final Bootstrap bootstrap;
+
+    private final ServiceDiscovery serviceDiscovery;
+    private final CommonSerializer serializer;
     private final UnprocessedRequests unprocessedRequests;
 
     static {

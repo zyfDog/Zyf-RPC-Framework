@@ -32,14 +32,6 @@ public class RequestHandler{
     public Object handle(RpcRequest rpcRequest){
         //从服务端本地注册表中获取服务实体
         Object service = serviceProvider.getServiceProvider(rpcRequest.getInterfaceName());
-        /*try{
-            result = invokeTargetMethod(rpcRequest, service);
-            log.info("服务：{}成功调用方法：{}", rpcRequest.getInterfaceName(), rpcRequest.getMethodName());
-        }catch (IllegalAccessException | InvocationTargetException e){
-            log.info("调用或发送时有错误发生：" + e);
-        }
-        //方法调用成功
-        return RpcResponse.success(result, rpcRequest.getRequestId());*/
         return invokeTargetMethod(rpcRequest, service);
     }
 

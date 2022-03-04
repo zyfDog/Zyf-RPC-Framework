@@ -1,7 +1,6 @@
 package com.zyf.rpc.transport.netty.server;
 
 import com.zyf.rpc.entity.RpcRequest;
-import com.zyf.rpc.factory.ThreadPoolFactory;
 import com.zyf.rpc.handler.RequestHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,8 +8,6 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author zyf
@@ -23,13 +20,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
 
     // private static final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
     private static final String THREAD_NAME_PREFIX = "netty-server-handler";
-    private final ExecutorService threadPool;
     private final RequestHandler requestHandler;
 
     public NettyServerHandler() {
         requestHandler = new RequestHandler();
         //引入异步业务线程池，避免长时间的耗时业务阻塞netty本身的worker工作线程，耽误了同一个Selector中其他任务的执行
-        threadPool = ThreadPoolFactory.createDefaultThreadPool(THREAD_NAME_PREFIX);
+//        threadPool = ThreadPoolFactory.createDefaultThreadPool(THREAD_NAME_PREFIX);
     }
 
     @Override

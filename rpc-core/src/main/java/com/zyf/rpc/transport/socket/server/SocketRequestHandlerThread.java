@@ -40,12 +40,6 @@ public class SocketRequestHandlerThread implements Runnable {
         try(InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream()) {
             RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
-//            String interfaceName = rpcRequest.getInterfaceName();
-//            // 通过接口名获取实现类
-//            Object service = serviceRegistry.getService(interfaceName);
-            // 通过处理器执行方法，得到返回结果
-            /*Object result = requestHandler.handle(rpcRequest, service);
-            RpcResponse<Object> response = RpcResponse.success(result);*/
             Object response = requestHandler.handle(rpcRequest);
             ObjectWriter.writeObject(outputStream, response, serializer);
         }catch (IOException e){

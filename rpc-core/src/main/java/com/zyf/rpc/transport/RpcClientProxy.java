@@ -57,6 +57,7 @@ public class RpcClientProxy implements InvocationHandler {
             try {
                 //异步获取调用结果
                 CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>)client.sendRequest(rpcRequest);
+                rpcResponse = completableFuture.get();
             }catch (Exception e){
                 log.error("方法调用请求发送失败", e);
                 return null;

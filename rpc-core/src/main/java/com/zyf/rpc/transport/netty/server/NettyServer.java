@@ -5,10 +5,8 @@ import com.zyf.rpc.codec.CommonEncoder;
 import com.zyf.rpc.enumeration.RpcError;
 import com.zyf.rpc.exception.RpcException;
 import com.zyf.rpc.hook.ShutdownHook;
-import com.zyf.rpc.provider.ServiceProvider;
 import com.zyf.rpc.provider.ServiceProviderImpl;
 import com.zyf.rpc.register.NacosServiceRegistry;
-import com.zyf.rpc.register.ServiceRegistry;
 import com.zyf.rpc.serializer.CommonSerializer;
 import com.zyf.rpc.transport.AbstractRpcServer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -32,12 +30,6 @@ import java.util.concurrent.TimeUnit;
 public class NettyServer extends AbstractRpcServer {
 
     private final CommonSerializer serializer;
-
-    private final String host;
-    private final int port;
-
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
 
     public NettyServer(String host, int port) {
         this(host, port, DEFAULT_SERIALIZER);

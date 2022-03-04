@@ -1,7 +1,6 @@
 package com.zyf.rpc.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import java.io.Serializable;
  * @description 传输格式（传输协议）：客户端向服务端传输的对象
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RpcRequest implements Serializable {
