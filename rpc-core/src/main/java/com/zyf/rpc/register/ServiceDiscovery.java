@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
  * @description 服务发现接口
  */
 public interface ServiceDiscovery {
+
     /**
      * @description 根据服务名称查找服务端地址
      */

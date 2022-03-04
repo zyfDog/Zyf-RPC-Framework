@@ -23,7 +23,6 @@ public class ServiceProviderImpl implements ServiceProvider {
     private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
 
     /**
-     * 用来存放实现类的名称，Set存取更高效，存放实现类名称相比存放接口名称占的空间更小，因为一个实现类可能实现了多个接口，查找效率也会更高
      *
      * 用来存放服务名称(即接口名）
      */

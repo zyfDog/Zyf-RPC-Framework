@@ -73,6 +73,7 @@ public class SocketClient implements RpcClient {
             socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
+            // 客户端向服务端写入
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);
             Object obj = ObjectReader.readObject(inputStream);
             RpcResponse rpcResponse = (RpcResponse) obj;

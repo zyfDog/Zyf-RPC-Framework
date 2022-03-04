@@ -19,11 +19,20 @@ import java.util.jar.JarFile;
  */
 public class ReflectUtil {
 
+    /**
+     * 通过堆栈轨迹获取启动类的全类名
+     * @return
+     */
     public static String getStackTrace() {
         StackTraceElement[] stack = new Throwable().getStackTrace();
         return stack[stack.length - 1].getClassName();
     }
 
+    /**
+     * 获取包下面的所有类Class对象
+     * @param packageName
+     * @return
+     */
     public static Set<Class<?>> getClasses(String packageName) {
         Set<Class<?>> classes = new LinkedHashSet<>();
         boolean recursive = true;
@@ -109,6 +118,13 @@ public class ReflectUtil {
         return classes;
     }
 
+    /**
+     * 以文件的方式扫描整个包下的文件 并添加到集合中
+     * @param packageName
+     * @param packagePath
+     * @param recursive
+     * @param classes
+     */
     private static void findAndAddClassesInPackageByFile(String packageName,
                                                          String packagePath, final boolean recursive, Set<Class<?>> classes) {
         // 获取此包的目录 建立一个File

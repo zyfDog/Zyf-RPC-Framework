@@ -20,6 +20,9 @@ import java.util.List;
  * 将收到的字节序列还原为实际对象。主要就是一些字段的校验，比较重要的就是取出序列化器的编号，
  * 以获得正确的反序列化方式，并且读入 length 字段来确定数据包的长度（防止粘包），
  * 最后读入正确大小的字节数组，反序列化成对应的对象。
+ *
+ * 解码器就是将收到的字节序列还原为实际对象，主要就是进行字段的校验，比较重要的就是取出序列化器编号，
+ * 以获得正确的反序列化方式，并且利用length字段来确定数据包的长度（防止粘包），读出正确长度的字节数组，然后反序列化成对应的对象。
  */
 @Slf4j
 public class CommonDecoder extends ReplayingDecoder {
@@ -57,7 +60,7 @@ public class CommonDecoder extends ReplayingDecoder {
         byte[] bytes = new byte[length];
         in.readBytes(bytes);
         Object obj = serializer.deserialize(bytes, packageClass);
-        //添加到对象列表
+        // 添加到对象列表
         out.add(obj);
     }
 }

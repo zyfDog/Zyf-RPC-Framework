@@ -34,7 +34,7 @@ public class NacosUtil {
     }
 
     /**
-     * @description 连接到Nacos创建命名空间
+     * @description 连接到Nacos创建命名空间 服务发现
      */
     public static NamingService getNacosNamingService() {
         try {
@@ -49,6 +49,9 @@ public class NacosUtil {
      * @description 注册服务到Nacos
      */
     public static void registerService(String serviceName, InetSocketAddress address) throws NacosException {
+        /**
+         * 服务名、服务实例IP、服务实例port
+         */
         namingService.registerInstance(serviceName, address.getHostName(), address.getPort());
         NacosUtil.address = address;
         //保存注册的服务名

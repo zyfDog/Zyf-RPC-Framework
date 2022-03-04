@@ -19,10 +19,17 @@ import java.io.InputStream;
 @Slf4j
 public class ObjectReader {
 
-    // private static final Logger logger = LoggerFactory.getLogger(ObjectReader.class);
+    // priv流 static final Logger logger = LoggerFactory.getLogger(ObjectReader.class);
     private static final int MAGIC_NUMBER = 0xCAFEBABE;
 
+    /**
+     *
+     * @param in 输入流
+     * @return
+     * @throws IOException
+     */
     public static Object readObject(InputStream in) throws IOException {
+        // 魔数
         byte[] numberBytes = new byte[4];
         in.read(numberBytes);
         int magic = bytesToInt(numberBytes);
@@ -30,6 +37,7 @@ public class ObjectReader {
             log.error("不识别的协议包：{}", magic);
             throw new RpcException(RpcError.UNKNOWN_PROTOCOL);
         }
+        // 通信包类型
         in.read(numberBytes);
         int packageCode = bytesToInt(numberBytes);
         Class<?> packageClass;
@@ -41,6 +49,7 @@ public class ObjectReader {
             log.error("不识别的数据包：{}", packageCode);
             throw new RpcException(RpcError.UNKNOWN_PACKAGE_TYPE);
         }
+        // 序列化器号
         in.read(numberBytes);
         int serializerCode = bytesToInt(numberBytes);
         CommonSerializer serializer = CommonSerializer.getByCode(serializerCode);
@@ -48,9 +57,11 @@ public class ObjectReader {
             log.error("不识别的反序列化器：{}", serializerCode);
             throw new RpcException(RpcError.UNKNOWN_SERIALIZER);
         }
+        // 序列化后实际数据长度
         in.read(numberBytes);
         int length = bytesToInt(numberBytes);
         byte[] bytes = new byte[length];
+        // 序列化后实际数据
         in.read(bytes);
         return serializer.deserialize(bytes, packageClass);
     }

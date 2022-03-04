@@ -23,7 +23,8 @@ public class ProtostuffSerializer implements CommonSerializer {
      */
     private LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
     /**
-     * 缓存类对应的Schema，由于构造schema需要获得对象的类和字段信息，会用到反射机制，这是一个很耗时的过程，因此进行缓存很有必要，下次遇到相同的类直接从缓存中get就行了
+     * 缓存类对应的Schema，由于构造schema需要获得对象的类和字段信息，会用到反射机制，这是一个很耗时的过程，
+     * 因此进行缓存很有必要，下次遇到相同的类直接从缓存中get就行了
      */
     private Map<Class<?>, Schema<?>> schemaCache = new ConcurrentHashMap<>();
 

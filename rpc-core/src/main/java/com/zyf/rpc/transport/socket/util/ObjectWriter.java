@@ -17,7 +17,15 @@ public class ObjectWriter {
     // private static final Logger logger = LoggerFactory.getLogger(ObjectWriter.class);
     private static final int MAGIC_NUMBER = 0xCAFEBABE;
 
+    /**
+     *
+     * @param out 输出流
+     * @param object 请求或响应
+     * @param serializer 序列化器
+     * @throws IOException
+     */
     public static void writeObject(OutputStream out, Object object, CommonSerializer serializer) throws IOException {
+        // 魔数+通信包类型+序列化器编号+序列化后实际数据长度+序列化后实际数据
         out.write(intToBytes(MAGIC_NUMBER));
         if(object instanceof RpcRequest) {
             out.write(intToBytes(PackageType.REQUEST_PACK.getCode()));

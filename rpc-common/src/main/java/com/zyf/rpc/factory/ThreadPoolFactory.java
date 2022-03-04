@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 public class ThreadPoolFactory {
     /**
      * 线程池参数
+     * KEEP_ALIVE_TIME 最大线程数可以存活的时间，当线程中没有任务执行时，最大线程就会销毁一部分，最终保持核心线程数量的线程
      */
     private static final int CORE_POOL_SIZE = 10;
     private static final int MAXIMUM_POOL_SIZE = 100;
@@ -64,6 +65,12 @@ public class ThreadPoolFactory {
         });
     }
 
+    /**
+     * 创建核心线程为10 最大线程为100 阻塞队列为100
+     * @param threadNamePrefix
+     * @param daemon
+     * @return
+     */
     private static ExecutorService createThreadPool(String threadNamePrefix, Boolean daemon){
         /**
          * 设置上限为100个线程的阻塞队列

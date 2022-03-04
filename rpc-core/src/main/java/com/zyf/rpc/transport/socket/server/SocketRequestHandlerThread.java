@@ -40,7 +40,9 @@ public class SocketRequestHandlerThread implements Runnable {
         try(InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream()) {
             RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
+            // 获得方法返回结果
             Object response = requestHandler.handle(rpcRequest);
+            // 服务端向客户端写入
             ObjectWriter.writeObject(outputStream, response, serializer);
         }catch (IOException e){
             log.info("调用或发送时发生错误：" + e);

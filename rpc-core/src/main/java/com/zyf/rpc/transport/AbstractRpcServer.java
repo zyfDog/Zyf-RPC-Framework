@@ -69,6 +69,7 @@ public abstract class AbstractRpcServer implements RpcServer{
                     //一个服务Impl类可能实现了多个服务接口
                     Class<?>[] interfaces = clazz.getInterfaces();
                     for(Class<?> oneInterface : interfaces){
+                        // 实现类实例 + 接口名
                         publishService(obj, oneInterface.getCanonicalName());
                     }
                 }else {
